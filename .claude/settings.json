@@ -1,0 +1,20 @@
+{
+  "enabledMcpjsonServers": ["meta-ads"],
+  "permissions": {
+    "ask": [
+      "mcp__meta-ads__ads_create_*",
+      "mcp__meta-ads__ads_update_*",
+      "mcp__meta-ads__ads_activate_*",
+      "mcp__meta-ads__ads_boost_*",
+      "mcp__meta-ads__ads_catalog_create*",
+      "mcp__meta-ads__ads_experiment_*"
+    ],
+    "allow": [
+      "mcp__meta-ads__ads_get_*",
+      "mcp__meta-ads__ads_insights_*",
+      "mcp__meta-ads__ads_account_get_*",
+      "mcp__meta-ads__authenticate",
+      "mcp__meta-ads__complete_authentication"
+    ]
+  }
+}

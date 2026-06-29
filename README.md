@@ -1,17 +1,47 @@
 # gaucho-ads
 
-Meta Ads campaign management via Claude Code and the official Meta Ads MCP server.
+Agentic Meta Ads management via Claude Code and the **official Meta Ads MCP** — monitor, optimize,
+create, and report on real Facebook/Instagram campaigns in natural language, with money-spending
+actions gated behind your explicit approval.
 
-## What this is
+Mattress sales, Argentina · ad account `1930186940607840` · ARS.
 
-This repo documents and manages Meta ad campaigns for mattress sales in Argentina, operated entirely through Claude Code using natural language via the official Meta Ads MCP.
+## Quickstart
 
-## Setup
+1. Open Claude Code **inside this directory** (`gaucho-ads`).
+2. Approve the `meta-ads` MCP server when prompted (it's defined in `.mcp.json`).
+3. Run **`/onboard`** — authenticate (browser OAuth, **no API keys**), verify the account, check
+   billing, and capture your goals.
+4. Run **`/menu`** to see every workflow and pick one.
 
-See [Documentation/meta-mcp-setup.md](Documentation/meta-mcp-setup.md) for the full setup journey — MCP installation, OAuth authentication, billing configuration, and lessons learned.
+A fresh session in this repo has everything it needs.
+
+## What's inside
+
+| Path | Purpose |
+|---|---|
+| `CLAUDE.md` | Always-on context + the guardrails (read first) |
+| `.mcp.json` | Registers the official `meta-ads` MCP (`https://mcp.facebook.com/ads`) |
+| `.claude/settings.json` | Enables the MCP + enforces read-allow / write-prompt permissions |
+| `.claude/skills/` | The `/slash` menu — `onboard`, `menu`, `monitor`, `optimize`, `create-campaign`, `report`, `activate` |
+| `workflows/` | The playbooks (decision rules + which `ads_*` tools to call) + `guardrails.md` |
+| `account/defaults.md` | Editable account facts + strategy thresholds (single source of truth) |
+| `Documentation/meta-mcp-setup.md` | The original MCP setup + troubleshooting journey |
+
+## The workflows
+
+🟢 **Monitor** & **Report** run freely (read-only). 🟡 **Optimize** proposes changes and waits for
+your approval. 🔴 **Create** assembles a campaign and leaves it **PAUSED** — going live is a separate,
+deliberate **`/activate`**. See [`workflows/README.md`](workflows/README.md) for the full menu.
+
+## Safety
+
+**Approve money moves.** Reads are free; every create / budget-up / activate requires explicit
+approval, enforced in three layers (harness permissions, prompt rules, workflow gates). New campaigns
+never spend until you activate them. Details in [`workflows/guardrails.md`](workflows/guardrails.md).
 
 ## Status
 
-- MCP connected and authenticated
-- Ad account `1930186940607840` active in ARS
-- $20,000 ARS loaded, ready to run campaigns
+- Ad account `1930186940607840` — active, ARS, funded (~$20,000 ARS loaded).
+- Agentic scaffold (workflows, skills, guardrails) — in place.
+- Each new machine/session connects with **`/onboard`** (MCP auth is per-environment).
