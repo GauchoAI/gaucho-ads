@@ -58,10 +58,28 @@ READ (auto)
                          • going live    → requires a separate /activate (a second, explicit yes)
 ```
 
+## Read-only awareness is allowed (not "automation")
+
+In-session, **read-only** monitoring — `/watch`, the `SessionStart` digest, periodic `/loop /watch`
+— is explicitly fine: it calls only `ads_get_*` / `ads_insights_*` / `ads_account_get_*`, never a
+write tool, and runs only while you have a session open. It writes to the **local** memory DB, never
+to Meta. This carve-out does not loosen anything below — the prohibition is specifically on
+unattended *writing*. See [`awareness.md`](awareness.md) and [`memory.md`](memory.md).
+
 ## Out of scope (documented, not built)
 
-Unattended automation (schedulers, auto-apply, "set it and forget it" rules) is intentionally
-**not** built — the official MCP is human-in-the-loop by design (no scheduler). If you ever need
+Unattended **writing** automation (schedulers, auto-apply, "set it and forget it" rules) is
+intentionally **not** built — the official MCP is human-in-the-loop by design (no scheduler), and
+cloud routines would run autonomously with writes allowed and no approval prompts. If you ever need
 it, the self-host route (Pipeboard `meta-ads-mcp` or your own Meta app) requires App ID + App
 Secret + a **system-user access token** + `act_<id>`, plus its own guardrails. Do not add
 autonomous writing without revisiting this safety model first.
+
+## Secrets boundary
+
+The committed memory store (`memory/agent.sqlite` + `memory/audit-log.jsonl`) holds **NON-SECRET data
+only** — profile, goals, audit log, monitoring snapshots. The Meta OAuth token stays in Claude Code's
+MCP auth store (outside the repo); it is **never** copied into the DB/JSONL/git. Any future secret
+(e.g. a self-host App Secret + system-user token) belongs in the **OS keychain**, referenced by name.
+`memory/db.py checkpoint` runs a best-effort secret scan and aborts on a token-shaped string;
+`.gitignore` blocks `.env*`. See [`memory.md`](memory.md).

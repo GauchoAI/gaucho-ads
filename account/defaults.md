@@ -43,6 +43,7 @@ Practitioner consensus, **not** Meta rules — tune to how this account actually
 | Creative refresh cadence | feed 14–28 d · Reels 7–14 d · Stories 10–18 d | OPT-7 |
 | Pacing on-track band | 90–110% of planned | MON-1, REP-1 |
 | Anomaly trigger | CPA > 20% above target over 7 d, or above target 3 days running | MON-2 |
+| Awareness sweep cadence | 15 min (in-session `/loop /watch`) | awareness.md |
 
 ## Platform rules (fixed — Meta-official)
 
@@ -65,4 +66,8 @@ Three levels, **underscores** (not hyphens) for clean parsing:
 
 - Mode: **Approve money moves** — reads run free; create / update / activate require explicit approval.
 - New campaigns / ad sets / ads are always created **PAUSED**; going live is a separate `/activate`.
+- **Memory:** this file stays the human-editable source of truth for goals & thresholds; the durable
+  store (`memory/agent.sqlite`, git LFS, **non-secret only**) mirrors goals and snapshots these
+  thresholds over time, and holds the audit log + monitoring history. See
+  [`../workflows/memory.md`](../workflows/memory.md).
 - Full model: [`../workflows/guardrails.md`](../workflows/guardrails.md).

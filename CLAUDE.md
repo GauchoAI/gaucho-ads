@@ -27,10 +27,11 @@ must you:
 ## How to work here
 
 - **`/menu`** lists every workflow — route the user there if they're unsure.
-- The four categories (full decision rules + which `ads_*` tools to call live in the playbooks):
+- The categories (full decision rules + which `ads_*` tools to call live in the playbooks):
 
   | Category | Playbook | Zone |
   |---|---|---|
+  | Awareness | [`workflows/awareness.md`](workflows/awareness.md) | 🟢 read-only |
   | Monitor | [`workflows/monitoring.md`](workflows/monitoring.md) | 🟢 read-only |
   | Optimize | [`workflows/optimization.md`](workflows/optimization.md) | 🟡 propose → approve |
   | Create | [`workflows/creation.md`](workflows/creation.md) | 🔴 assemble → PAUSED |
@@ -40,6 +41,30 @@ must you:
 - **Free-form requests** ("how are my ads doing?", "scale the winners") are welcome — map them to
   the relevant playbook and honor the guardrails. The `workflows/*.md` files are the source of
   truth; the `/slash` skills are just shortcuts into them.
+
+## Memory & awareness
+
+This project has a **durable memory store** — `memory/agent.sqlite` (git LFS) + an append-only
+`memory/audit-log.jsonl` mirror — holding the account profile, goals, an **audit log of every action
+you take**, and **monitoring snapshots/deltas**. It is the project's cross-session memory. Touch it
+only through the helper: `python3 memory/db.py …` (see [`workflows/memory.md`](workflows/memory.md)).
+
+- **Log what you do.** After any proposal, approved write, or `/activate`, record it
+  (`db.py record-audit`). After a `/watch` sweep, `snapshot` then `compute-deltas`.
+- **Stay aware.** `/watch` is in-session, **read-only** live awareness (diffs vs the last snapshot,
+  surfaces what changed server-side — see [`workflows/awareness.md`](workflows/awareness.md)). An
+  optional `SessionStart` digest (enabled during onboarding) greets you with last-known state; when
+  you see it, proactively offer a live `/watch`. There is **no unattended scheduler** — by design
+  (see `guardrails.md`).
+- **Commit via `/checkpoint`** — never `git add` the DB directly; `/checkpoint` folds the WAL, scans
+  for secrets, and stages the LFS files. Never auto-commit mid-sweep.
+
+## ⛔ Secrets boundary
+
+The committed memory store holds **NON-SECRET data only**. The Meta OAuth token is managed by Claude
+Code's MCP auth store (outside the repo) — **never** copy it into the DB, the JSONL, or git. The
+schema has no credential columns. Any future secret → the **OS keychain**, never the repo. `db.py
+checkpoint` aborts if a token-shaped string is found in the committed files.
 
 ## Conventions
 

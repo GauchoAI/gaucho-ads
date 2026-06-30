@@ -1,0 +1,17 @@
+# SQLite runtime sidecars — per-host transient state, never commit.
+# (The committed .db is folded together via `db.py checkpoint` before each add.)
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.db-wal
+*.db-shm
+*.db-journal
+
+# Secrets — never commit. The memory store holds NON-SECRET data only;
+# any real secret belongs in the OS keychain, not the repo.
+.env
+.env.*
+!.env.example
+
+# OS cruft
+.DS_Store

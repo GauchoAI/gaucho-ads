@@ -22,6 +22,14 @@ Read-only health checks. Run anytime.
 - **MON-5 Disapproved / policy** — rejected ads & account quality.
 - **MON-6 Delivery / zero-spend** — ad sets not delivering, and why.
 
+## 🟢 Awareness — `/watch` → [`awareness.md`](awareness.md)
+
+Persistent, read-only live awareness backed by the memory store. Pulls current state, diffs against
+the last snapshot, and surfaces **what changed server-side** (changes, spend, anomalies, and Claude's
+own past actions). Use `/loop 15m /watch` to keep it live while you work; an optional `SessionStart`
+digest (enable during onboarding) can greet you with last-known state each session. Memory model:
+[`memory.md`](memory.md).
+
 ## 🟡 Optimize — `/optimize` → [`optimization.md`](optimization.md)
 
 Analyze and **propose** changes; apply only after you approve.
@@ -45,5 +53,10 @@ Read-only reports with an auto-derived action flag (PAUSE / SCALE / MONITOR) per
   · **REP-4 Audience / breakdown** · **REP-5 Executive**
 
 ---
+
+**Memory:** the account profile, goals, an audit log of every action Claude takes, and monitoring
+snapshots/deltas persist in `memory/agent.sqlite` (git LFS, non-secret only) — see
+[`memory.md`](memory.md). Run **`/checkpoint`** before committing memory changes (folds the WAL,
+scans for secrets, stages the LFS files).
 
 Free-form is fine too — describe what you want and it maps to the right playbook, under the guardrails.
